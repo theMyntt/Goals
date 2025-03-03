@@ -584,3 +584,4 @@ FodyWeavers.xsd
 
 .DS_Store
 appsettings.*.json
+!*.slnLaunch.user

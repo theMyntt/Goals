@@ -1,5 +1,7 @@
 
+using Goals.API.Abstractions.Repositories;
 using Goals.API.Context;
+using Goals.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Goals.API
@@ -22,6 +24,8 @@ namespace Goals.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 

@@ -1,4 +1,7 @@
 
+using Goals.API.Context;
+using Microsoft.EntityFrameworkCore;
+
 namespace Goals.API
 {
     public class Program
@@ -9,6 +12,11 @@ namespace Goals.API
 
             builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: false);
             // Add services to the container.
+            builder.Services.AddDbContext<DatabaseContext>(options =>
+            {
+                var connectionString = builder.Configuration.GetConnectionString("MsSql") ?? throw new Exception("ConnectionsStrings:MsSql Is Null");
+                options.UseSqlServer(connectionString);
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

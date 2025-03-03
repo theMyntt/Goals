@@ -7,6 +7,7 @@ namespace Goals.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: false);
             // Add services to the container.
 
             builder.Services.AddControllers();

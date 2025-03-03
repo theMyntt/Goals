@@ -1,6 +1,6 @@
 [
   {
-    "Name": "New Profile",
+    "Name": "Start All Profile",
     "Projects": [
       {
         "Path": "Goals.API\\Goals.API.csproj",

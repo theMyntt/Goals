@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  GoalsAPI:
+    build:
+      context: ./Goals.API
+      dockerfile: Dockerfile
+    container_name: "Goals API"
+    ports:
+      - "5001:8080" 
+
+  GoalsWebUI:
+    build:
+      context: ./Goals.WebUI
+      dockerfile: Dockerfile
+    container_name: "Goals WebSite"
+    ports:
+      - "5002:8080"

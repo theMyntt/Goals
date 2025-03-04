@@ -53,14 +53,22 @@ namespace Goals.API.Repositories
             {
                 user.LoginAttempt += 1;
 
+                _table.Update(user);
                 await _context.SaveChangesAsync();
 
                 throw new NotFoundException("Password are incorrect.");
             }
 
+            if(user.LoginAttempt > 0)
+            {
+                user.LoginAttempt = 0;
+
+                _table.Update(user);
+                await _context.SaveChangesAsync();
+            }
+
             user.PasswordHash = string.Empty;
             user.PasswordSalt = string.Empty;
-
 
             return user;
         }

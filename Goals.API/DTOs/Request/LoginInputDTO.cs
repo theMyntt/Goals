@@ -1,6 +1,8 @@
-﻿namespace Goals.API.DTOs.Request
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Goals.API.DTOs.Request
 {
     public record LoginInputDTO(
-        string Email,
-        string Password);
+        [Required, EmailAddress] string Email,
+        [Required, MinLength(6)] string Password);
 }

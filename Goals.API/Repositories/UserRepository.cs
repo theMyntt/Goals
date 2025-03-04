@@ -2,6 +2,7 @@
 using Goals.API.Abstractions.Repositories;
 using Goals.API.Context;
 using Goals.API.DTOs.Request;
+using Goals.API.Exceptions;
 using Goals.API.Helpers;
 using Goals.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +25,7 @@ namespace Goals.API.Repositories
             var isCreated = (await _table.FirstOrDefaultAsync(u => u.Email == model.Email)) != null;
 
             if (isCreated)
-                // TODO: Throw http exception
-                return new UserModel();
+                throw new NotFoundException("Email/Password are incorrect.");
 
             model.Id = Guid.NewGuid();
 
@@ -40,23 +40,27 @@ namespace Goals.API.Repositories
             var user = await _table.FirstOrDefaultAsync(u => u.Email == email.Trim());
 
             if (user == null)
-                // TODO: Throw http exception
-                return new UserModel();
+                throw new NotFoundException("User not exists.");
 
             var isEqualPassword = PasswordHelper.Compare(password.Trim(), new PasswordHelperInputDTO(
                 Salt: user.PasswordSalt,
                 Hash: user.PasswordHash));
 
+            if (user.LoginAttempt > 5)
+                throw new ForbiddenException("This user are blocked.");
+
+            if (!isEqualPassword)
+            {
+                user.LoginAttempt += 1;
+
+                await _context.SaveChangesAsync();
+
+                throw new NotFoundException("Password are incorrect.");
+            }
+
             user.PasswordHash = string.Empty;
             user.PasswordSalt = string.Empty;
 
-            if (!isEqualPassword)
-                // TODO: Throw http exception
-                return new UserModel();
-
-            if (user.LoginAttempt > 5)
-                // TODO: Throw http exception
-                return new UserModel();
 
             return user;
         }

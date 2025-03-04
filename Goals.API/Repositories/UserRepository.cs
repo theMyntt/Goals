@@ -25,7 +25,7 @@ namespace Goals.API.Repositories
             var isCreated = (await _table.FirstOrDefaultAsync(u => u.Email == model.Email)) != null;
 
             if (isCreated)
-                throw new NotFoundException("Email/Password are incorrect.");
+                throw new BadRequestException("User already exists.");
 
             model.Id = Guid.NewGuid();
 

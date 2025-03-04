@@ -22,5 +22,13 @@ namespace Goals.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("v1/register")]
+        public async Task<IActionResult> CreateAsync(RegisterUserInputDTO dto)
+        {
+            var result = await _service.CreateAsync(dto);
+
+            return StatusCode(201, result);
+        }
     }
 }

@@ -3,6 +3,7 @@ using Goals.API.Abstractions.Helpers;
 using Goals.API.Abstractions.Repositories;
 using Goals.API.Context;
 using Goals.API.Helpers;
+using Goals.API.Middlewares;
 using Goals.API.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,8 @@ namespace Goals.API
 
             var app = builder.Build();
 
+            app.UseMiddleware<HttpExceptionMiddleware>();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -40,7 +43,6 @@ namespace Goals.API
             }
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

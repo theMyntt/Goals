@@ -1,4 +1,5 @@
 
+using System.Text;
 using Goals.API.Abstractions.Helpers;
 using Goals.API.Abstractions.Repositories;
 using Goals.API.Abstractions.Services;
@@ -7,7 +8,10 @@ using Goals.API.Helpers;
 using Goals.API.Middlewares;
 using Goals.API.Repositories;
 using Goals.API.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Goals.API
 {
@@ -34,6 +38,23 @@ namespace Goals.API
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"]!,
+                        ValidAudience = builder.Configuration["Jwt:Audience"]!,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!)),
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+            builder.Services.AddAuthorization();
+
             var app = builder.Build();
 
             app.UseMiddleware<HttpExceptionMiddleware>();
@@ -44,7 +65,8 @@ namespace Goals.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+        
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

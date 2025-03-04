@@ -1,10 +1,12 @@
 
 using Goals.API.Abstractions.Helpers;
 using Goals.API.Abstractions.Repositories;
+using Goals.API.Abstractions.Services;
 using Goals.API.Context;
 using Goals.API.Helpers;
 using Goals.API.Middlewares;
 using Goals.API.Repositories;
+using Goals.API.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Goals.API
@@ -29,6 +31,7 @@ namespace Goals.API
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 
             var app = builder.Build();
